@@ -15,15 +15,12 @@ module.exports = {
      * @param {string[]} args
      */
     run: async (client, message, args) => {
-        let prefix = config.handler.prefix;
+        const data = await prisma.guild.findUnique({
+            where: { id: interaction.guildId },
+            select: { prefix: true },
+        });
 
-        try {
-            const data = await GuildSchema.findOne({ guild: message.guildId });
-
-            if (data && data?.prefix) prefix = data.prefix;
-        } catch {
-            prefix = config.handler.prefix;
-        }
+        const prefix = data?.prefix || config.handler.prefix;
 
         const mapIntCmds = client.applicationcommandsArray.map(
             (v) => `\`${v.type === 2 || v.type === 3 ? "" : "/"}${v.name}\`: ${v.description || "(No description)"}`,
