@@ -15,11 +15,7 @@ module.exports = {
             if (component.options?.public === false && interaction.user.id !== interaction.message.interaction.user.id) {
                 await interaction.reply({
                     content:
-                        config.messageSettings.notHasPermissionComponent !== undefined &&
-                        config.messageSettings.notHasPermissionComponent !== null &&
-                        config.messageSettings.notHasPermissionComponent !== ""
-                            ? config.messageSettings.notHasPermissionComponent
-                            : "You do not have permission to use this component",
+                        "You do not have permission to use this component",
                     ephemeral: true
                 });
                 return false;

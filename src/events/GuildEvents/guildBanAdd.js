@@ -1,7 +1,7 @@
 const config = require('../../config');
 const ExtendedClient = require('../../class/ExtendedClient');
 const { EmbedBuilder } = require('discord.js');
-const { time } = require('../../functions');
+const { time } = require('discord.js');
 
 module.exports = {
     event: 'guildBanAdd',

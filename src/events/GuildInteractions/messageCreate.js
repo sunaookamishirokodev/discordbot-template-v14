@@ -1,7 +1,6 @@
 const { ChannelType, Message } = require("discord.js");
 const config = require("../../config");
 const { log } = require("../../functions");
-const GuildSchema = require("../../schemas/GuildSchema");
 const ExtendedClient = require("../../class/ExtendedClient");
 
 const cooldown = new Map();
@@ -19,17 +18,12 @@ module.exports = {
 
         if (!config.handler.commands.prefix) return;
 
-        let prefix = config.handler.prefix;
+        const data = await prisma.guild.findUnique({
+            where: { id: interaction.guildId },
+            select: { prefix: true },
+        });
 
-        if (config.handler?.mongodb?.enabled) {
-            try {
-                const guildData = await GuildSchema.findOne({ guild: message.guildId });
-
-                if (guildData && guildData?.prefix) prefix = guildData.prefix;
-            } catch {
-                prefix = config.handler.prefix;
-            }
-        }
+        const prefix = data?.prefix || config.handler.prefix;
 
         if (!message.content.startsWith(prefix)) return;
 
@@ -40,40 +34,25 @@ module.exports = {
 
         let command =
             client.collection.prefixcommands.get(commandInput) ||
-            client.collection.prefixcommands.get(
-                client.collection.aliases.get(commandInput)
-            );
+            client.collection.prefixcommands.get(client.collection.aliases.get(commandInput));
 
         if (command) {
             try {
                 if (command.structure?.ownerOnly) {
                     if (message.author.id !== config.users.ownerId) {
                         await message.reply({
-                            content:
-                                config.messageSettings.ownerMessage !== undefined &&
-                                    config.messageSettings.ownerMessage !== null &&
-                                    config.messageSettings.ownerMessage !== ""
-                                    ? config.messageSettings.ownerMessage
-                                    : "The bot developer has the only permissions to use this command.",
-                            ephemeral: true
+                            content: "The bot developer has the only permissions to use this command.",
+                            ephemeral: true,
                         });
 
                         return;
                     }
                 }
 
-                if (
-                    command.structure?.permissions &&
-                    !message.member.permissions.has(command.structure?.permissions)
-                ) {
+                if (command.structure?.permissions && !message.member.permissions.has(command.structure?.permissions)) {
                     await message.reply({
-                        content:
-                            config.messageSettings.notHasPermissionMessage !== undefined &&
-                                config.messageSettings.notHasPermissionMessage !== null &&
-                                config.messageSettings.notHasPermissionMessage !== ""
-                                ? config.messageSettings.notHasPermissionMessage
-                                : "You do not have the permission to use this command.",
-                        ephemeral: true
+                        content: "You do not have the permission to use this command.",
+                        ephemeral: true,
                     });
 
                     return;
@@ -82,13 +61,8 @@ module.exports = {
                 if (command.structure?.developers) {
                     if (!config.users.developers.includes(message.author.id)) {
                         await message.reply({
-                            content:
-                                config.messageSettings.developerMessage !== undefined &&
-                                    config.messageSettings.developerMessage !== null &&
-                                    config.messageSettings.developerMessage !== ""
-                                    ? config.messageSettings.developerMessage
-                                    : "You are not authorized to use this command",
-                            ephemeral: true
+                            content: "You are not authorized to use this command",
+                            ephemeral: true,
                         });
 
                         return;
@@ -97,13 +71,8 @@ module.exports = {
 
                 if (command.structure?.nsfw && !message.channel.nsfw) {
                     await message.reply({
-                        content:
-                            config.messageSettings.nsfwMessage !== undefined &&
-                                config.messageSettings.nsfwMessage !== null &&
-                                config.messageSettings.nsfwMessage !== ""
-                                ? config.messageSettings.nsfwMessage
-                                : "The current channel is not a NSFW channel.",
-                        ephemeral: true
+                        content: "The current channel is not a NSFW channel.",
+                        ephemeral: true,
                     });
 
                     return;
@@ -135,13 +104,8 @@ module.exports = {
 
                         if (data.some((v) => v === commandInput)) {
                             await message.reply({
-                                content:
-                                    (config.messageSettings.cooldownMessage !== undefined &&
-                                        config.messageSettings.cooldownMessage !== null &&
-                                        config.messageSettings.cooldownMessage !== ""
-                                        ? config.messageSettings.cooldownMessage
-                                        : "Slow down buddy! You're too fast to use this command ({cooldown}s).").replace(/{cooldown}/g, command.structure.cooldown / 1000),
-                                ephemeral: true
+                                content: `Slow down buddy! You're too fast to use this command ${command.structure.cooldown / 1000}s.`,
+                                ephemeral: true,
                             });
 
                             return;

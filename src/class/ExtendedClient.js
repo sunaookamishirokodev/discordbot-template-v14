@@ -1,9 +1,8 @@
-const { Client, Partials, Collection, GatewayIntentBits } = require("discord.js");
+const { Client, Partials, Collection } = require("discord.js");
 const config = require('../config');
 const commands = require("../handlers/commands");
 const events = require("../handlers/events");
 const deploy = require("../handlers/deploy");
-const mongoose = require("../handlers/mongoose");
 const components = require("../handlers/components");
 
 module.exports = class extends Client {
@@ -22,7 +21,7 @@ module.exports = class extends Client {
 
     constructor() {
         super({
-            intents: 3276799, // Every intent
+            intents: 3276799,
             partials: [
                 Partials.Channel,
                 Partials.GuildMember,
@@ -33,9 +32,9 @@ module.exports = class extends Client {
             ],
             presence: {
                 activities: [{
-                    name: 'something goes here',
+                    name: 'Shu-chan',
                     type: 4,
-                    state: 'DiscordJS-V14-Bot-Template v2'
+                    state: 'Furina Template'
                 }]
             }
         });
@@ -45,8 +44,6 @@ module.exports = class extends Client {
         commands(this);
         events(this);
         components(this);
-
-        if (config.handler.mongodb.enabled) mongoose();
 
         await this.login(process.env.CLIENT_TOKEN || config.client.token);
 
