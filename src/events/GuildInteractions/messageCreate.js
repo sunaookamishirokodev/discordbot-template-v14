@@ -2,6 +2,7 @@ const { ChannelType, Message } = require("discord.js");
 const config = require("../../config");
 const { log } = require("../../functions");
 const ExtendedClient = require("../../class/ExtendedClient");
+const prisma = require("../../handlers/database");
 
 const cooldown = new Map();
 
@@ -19,7 +20,7 @@ module.exports = {
         if (!config.handler.commands.prefix) return;
 
         const data = await prisma.guild.findUnique({
-            where: { id: interaction.guildId },
+            where: { id: message.guildId },
             select: { prefix: true },
         });
 
