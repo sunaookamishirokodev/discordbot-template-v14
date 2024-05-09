@@ -1,12 +1,12 @@
 const { ChatInputCommandInteraction, SlashCommandBuilder, EmbedBuilder } = require("discord.js");
-const ExtendedClient = require("../../../class/ExtendedClient");
+const ExtendedClient = require("../../../classes/ExtendedClient");
 const config = require("../../../config");
 const prisma = require("../../../handlers/database");
 
 module.exports = {
     structure: new SlashCommandBuilder().setName("help").setDescription("View all the possible commands!"),
     options: {
-        cooldown: 15000,
+        cooldown: "5s",
     },
     /**
      * @param {ExtendedClient} client

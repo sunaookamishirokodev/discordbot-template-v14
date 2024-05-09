@@ -1,26 +1,28 @@
-const config = require('../../config');
-const { log } = require('../../functions');
-const ExtendedClient = require('../../class/ExtendedClient');
+const config = require("../../config");
+const { log } = require("../../functions");
+const ExtendedClient = require("../../classes/ExtendedClient");
 
 module.exports = {
-    event: 'interactionCreate',
+    event: "interactionCreate",
     /**
-     * 
-     * @param {ExtendedClient} client 
-     * @param {import('discord.js').Interaction} interaction 
-     * @returns 
+     *
+     * @param {ExtendedClient} client
+     * @param {import('discord.js').Interaction} interaction
+     * @returns
      */
     run: async (client, interaction) => {
         const componentPermission = async (component) => {
-            if (component.options?.public === false && interaction.user.id !== interaction.message.interaction.user.id) {
+            if (
+                component.options?.public === false &&
+                interaction.user.id !== interaction.message.interaction.user.id
+            ) {
                 await interaction.reply({
-                    content:
-                        "You do not have permission to use this component",
-                    ephemeral: true
+                    content: "You do not have permission to use this component",
+                    ephemeral: true,
                 });
                 return false;
-            };
-            
+            }
+
             return true;
         };
 
@@ -28,17 +30,17 @@ module.exports = {
             const component = client.collection.components.buttons.get(interaction.customId);
 
             if (!component) return;
-            
+
             if (!(await componentPermission(component))) return;
 
             try {
                 component.run(client, interaction);
             } catch (error) {
-                log(error, 'error');
+                log(error, "error");
             }
 
             return;
-        };
+        }
 
         if (interaction.isAnySelectMenu()) {
             const component = client.collection.components.selects.get(interaction.customId);
@@ -50,11 +52,11 @@ module.exports = {
             try {
                 component.run(client, interaction);
             } catch (error) {
-                log(error, 'error');
+                log(error, "error");
             }
 
             return;
-        };
+        }
 
         if (interaction.isModalSubmit()) {
             const component = client.collection.components.modals.get(interaction.customId);
@@ -64,11 +66,11 @@ module.exports = {
             try {
                 component.run(client, interaction);
             } catch (error) {
-                log(error, 'error');
-            };
+                log(error, "error");
+            }
 
             return;
-        };
+        }
 
         if (interaction.isAutocomplete()) {
             const component = client.collection.components.autocomplete.get(interaction.commandName);
@@ -78,10 +80,10 @@ module.exports = {
             try {
                 component.run(client, interaction);
             } catch (error) {
-                log(error, 'error');
+                log(error, "error");
             }
 
             return;
-        };
-    }
+        }
+    },
 };

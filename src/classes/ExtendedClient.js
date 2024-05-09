@@ -1,5 +1,5 @@
-const { Client, Partials, Collection } = require("discord.js");
-const config = require('../config');
+const { Client, Partials, Collection, ActivityType, PresenceUpdateStatus } = require("discord.js");
+const config = require("../config");
 const commands = require("../handlers/commands");
 const events = require("../handlers/events");
 const deploy = require("../handlers/deploy");
@@ -14,8 +14,8 @@ module.exports = class extends Client {
             buttons: new Collection(),
             selects: new Collection(),
             modals: new Collection(),
-            autocomplete: new Collection()
-        }
+            autocomplete: new Collection(),
+        },
     };
     applicationcommandsArray = [];
 
@@ -28,24 +28,23 @@ module.exports = class extends Client {
                 Partials.Message,
                 Partials.Reaction,
                 Partials.User,
-                Partials.ThreadMember
+                Partials.ThreadMember,
             ],
-            presence: {
-                activities: [{
-                    name: 'Shu-chan',
-                    type: 4,
-                    state: 'Furina Template'
-                }]
-            }
         });
-    };
+    }
 
     start = async () => {
         commands(this);
         events(this);
         components(this);
-
         await this.login(process.env.CLIENT_TOKEN || config.client.token);
+        await this.application.fetch();
+        this.user.setActivity("Furina Code Dạo", {
+            type: ActivityType.Streaming,
+            url: "https://github.com/furinadeveloper",
+            state: "Chilling with Furina"
+        });
+        this.user.setStatus(PresenceUpdateStatus.Online);
 
         if (config.handler.deploy) deploy(this, config);
     };

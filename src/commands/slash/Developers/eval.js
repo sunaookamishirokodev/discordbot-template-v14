@@ -1,66 +1,75 @@
-const {
-    SlashCommandBuilder,
-    EmbedBuilder,
-    ChatInputCommandInteraction,
-    AttachmentBuilder,
-} = require("discord.js");
-const ExtendedClient = require("../../../class/ExtendedClient");
+const { SlashCommandBuilder, EmbedBuilder, ChatInputCommandInteraction, AttachmentBuilder } = require("discord.js");
+const ExtendedClient = require("../../../classes/ExtendedClient");
 
 module.exports = {
     structure: new SlashCommandBuilder()
         .setName("eval")
         .setDescription("Execute some codes.")
         .addStringOption((option) =>
-            option
-                .setName("code")
-                .setDescription("The code to be executed.")
-                .setRequired(true)
+            option.setName("code").setDescription("The code to be executed.").setRequired(true),
         ),
     options: {
-        ownerOnly: true
+        ownerOnly: true,
     },
     /**
      * @param {ExtendedClient} client
      * @param {ChatInputCommandInteraction<true>} interaction
      */
     run: async (client, interaction) => {
-        await interaction.deferReply();
+        const code = interaction.options.getString("code")
+        const resultEmbed = new EmbedBuilder()
+            .setFooter({
+                text: `Gỡ lỗi cho ${client.user.username}`,
+                iconURL: client.user.displayAvatarURL(),
+            })
+            .setColor("Random")
+            .setTimestamp();
 
-        const code = interaction.options.getString("code");
+        const speed = Date.now() - interaction.createdTimestamp;
 
         try {
-            let executedEvalValue = eval(code);
+            const executed = await eval(code);
+            resultEmbed
+                .setAuthor({
+                    name: `Đã thành công!`,
+                    iconURL: client.user.displayAvatarURL(),
+                })
+                .addFields(
+                    {
+                        name: "・Type",
+                        value: `\`\`\`prolog\n${typeof executed}\`\`\``,
+                    },
+                    {
+                        name: "・Speed",
+                        value: `\`\`\`ytml\n${speed}ms\`\`\``,
+                    },
+                    {
+                        name: `・Code`,
+                        value: `\`\`\`js\n${code}\`\`\``,
+                    },
+                    {
+                        name: `・Output`,
+                        value: `\`\`\`js\n${inspect(executed, { depth: 0 })}\`\`\``,
+                    },
+                );
+        } catch (error) {
+            resultEmbed
+                .setAuthor({
+                    name: `Đã thất bại.`,
+                    iconURL: client.user.displayAvatarURL(),
+                })
+                .addFields(
+                    {
+                        name: `・Code`,
+                        value: `\`\`\`js\n${code}\`\`\``,
+                    },
+                    {
+                        name: `・Error`,
+                        value: `\`\`\`js\n${error.name}: ${error.message}\`\`\``,
+                    },
+                );
+        }
 
-            if (typeof executedEvalValue !== 'string') executedEvalValue = require('util').inspect(executedEvalValue);
-
-            executedEvalValue = `${executedEvalValue}` // Making sure it's string
-
-            executedEvalValue = executedEvalValue.replace(new RegExp(client.token, 'gi'), '?');
-
-            await interaction.editReply({
-                embeds: [
-                    new EmbedBuilder()
-                        .setTitle("Code executed")
-                        .setDescription(`Successfully executed the code, no errors were found.`)
-                        .setColor('Green')
-                ],
-                files: [
-                    new AttachmentBuilder(Buffer.from(`${executedEvalValue}`.replace(new RegExp(`${client.token}`, 'g'), '"[CLIENT TOKEN HIDDEN]"'), 'utf-8'), { name: 'output.javascript' })
-                ]
-            });
-        } catch (err) {
-            await interaction.editReply({
-                embeds: [
-                    new EmbedBuilder()
-                        .setTitle("Error")
-                        .setDescription(`Something went wrong while executing your code.`)
-                        .setColor('Red')
-                ],
-                files: [
-                    new AttachmentBuilder(Buffer.from(`${err}`, 'utf-8'), { name: 'output.txt' })
-                ]
-            });
-        };
-
+        interaction.reply({ embeds: [resultEmbed] });
     },
 };

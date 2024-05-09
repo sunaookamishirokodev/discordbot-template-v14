@@ -1,5 +1,5 @@
 const config = require("../../config");
-const ExtendedClient = require("../../class/ExtendedClient");
+const ExtendedClient = require("../../classes/ExtendedClient");
 const { EmbedBuilder, time } = require("discord.js");
 
 module.exports = {

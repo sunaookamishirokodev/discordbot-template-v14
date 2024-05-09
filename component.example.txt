@@ -1,10 +1,10 @@
 const { } = require('discord.js');
-const ExtendedClient = require('../../class/ExtendedClient');
+const ExtendedClient = require('../../classes/ExtendedClient');
 
 module.exports = {
     customId: '',
     options: {
-    public: boolean
+        public: boolean
     },
     /**
      * 
@@ -19,7 +19,7 @@ module.exports = {
 // auto complete interaction
 
 const { } = require('discord.js');
-const ExtendedClient = require('../../class/ExtendedClient');
+const ExtendedClient = require('../../classes/ExtendedClient');
 
 module.exports = {
     commandName: '', // The name of the command that has the autocomplete action

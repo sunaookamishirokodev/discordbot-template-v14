@@ -1,6 +1,6 @@
 const config = require("../../config");
 const { log } = require("../../functions");
-const ExtendedClient = require("../../class/ExtendedClient");
+const ExtendedClient = require("../../classes/ExtendedClient");
 
 const cooldown = new Map();
 
@@ -65,49 +65,38 @@ module.exports = {
             }
 
             if (command.options?.cooldown) {
-                const isGlobalCooldown = command.options.globalCooldown;
-                const cooldownKey = isGlobalCooldown ? "global_" + command.structure.name : interaction.user.id;
-                const cooldownFunction = () => {
-                    let data = cooldown.get(cooldownKey);
-
-                    data.push(interaction.commandName);
-
-                    cooldown.set(cooldownKey, data);
-
-                    setTimeout(() => {
-                        let data = cooldown.get(cooldownKey);
-
-                        data = data.filter((v) => v !== interaction.commandName);
-
-                        if (data.length <= 0) {
-                            cooldown.delete(cooldownKey);
-                        } else {
-                            cooldown.set(cooldownKey, data);
-                        }
-                    }, command.options.cooldown);
+                const setCooldown = (name, time) => {
+                    return {
+                        name,
+                        availableAt: Date.now() + ms(time),
+                    };
                 };
 
-                if (cooldown.has(cooldownKey)) {
-                    let data = cooldown.get(cooldownKey);
-
-                    if (data.some((v) => v === interaction.commandName)) {
-                        const cooldownMessage = isGlobalCooldown
-                            ? `Slow down buddy! This command is on a global cooldown ${command.options.cooldown / 1000}s.`
-                            : `Slow down buddy! You're too fast to use this command ${command.options.cooldown / 1000}s.`;
-
-                        await interaction.reply({
-                            content: cooldownMessage,
-                            ephemeral: true,
+                if (cooldown.has(interaction.user.id)) {
+                    const data = cooldown.get(interaction.user.id);
+                    if (data.name === interaction.commandName && data.availableAt <= Date.now()) {
+                        await message.reply({
+                            content: `Slow down buddy! Try it again in ${time(Date.now() - data.availableAt, "t")}.`,
                         });
-
-                        return;
-                    } else {
-                        cooldownFunction();
                     }
                 } else {
-                    cooldown.set(cooldownKey, [interaction.commandName]);
-                    cooldownFunction();
+                    cooldown.set(interaction.user.id, [setCooldown(interaction.commandName, command.options.cooldown)]);
                 }
+
+                setTimeout(() => {
+                    let data = cooldown.get(interaction.user.id);
+
+                    if (!data) return;
+                    data = data.filter((v) => v.name !== interaction.commandName);
+
+                    if (data.length === 0) {
+                        cooldown.delete(interaction.user.id);
+                    } else {
+                        cooldown.set(interaction.user.id, data);
+                    }
+                }, ms(command.options.cooldown));
+
+                command.run(client, message, args);
             }
 
             command.run(client, interaction);

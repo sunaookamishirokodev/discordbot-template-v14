@@ -1,21 +1,12 @@
-const {
-    SlashCommandBuilder,
-    EmbedBuilder,
-    ChatInputCommandInteraction,
-    AttachmentBuilder,
-    Routes,
-} = require("discord.js");
-const ExtendedClient = require("../../../class/ExtendedClient");
+const { SlashCommandBuilder, ChatInputCommandInteraction } = require("discord.js");
+const ExtendedClient = require("../../../classes/ExtendedClient");
 
 module.exports = {
     structure: new SlashCommandBuilder()
         .setName("set-animated-pfp")
-        .setDescription("Change the bot\'s profile picture to an animated one.")
+        .setDescription("Change the bot's profile picture to an animated one.")
         .addAttachmentOption((option) =>
-            option
-                .setName("attachment")
-                .setDescription("The attachment.")
-                .setRequired(true)
+            option.setName("attachment").setDescription("The attachment.").setRequired(true),
         ),
     options: {
         developers: true,
@@ -27,27 +18,27 @@ module.exports = {
     run: async (client, interaction) => {
         await interaction.deferReply();
 
-        const attachment = interaction.options.getAttachment('attachment', true);
+        const attachment = interaction.options.getAttachment("attachment", true);
 
-        if (attachment.contentType !== 'image/gif') {
+        if (attachment.contentType !== "image/gif") {
             await interaction.editReply({
-                content: 'Not a .gif image.'
+                content: "Not a .gif image.",
             });
 
             return;
-        };
+        }
 
-        await client.user.setAvatar(attachment.proxyURL)
+        await client.user
+            .setAvatar(attachment.proxyURL)
             .then(async () => {
                 await interaction.editReply({
-                    content: 'Done, profile picture updated.'
+                    content: "Done, profile picture updated.",
                 });
             })
             .catch(async (err) => {
                 await interaction.editReply({
-                    content: 'Something went wrong:\n' + err
+                    content: "Something went wrong:\n" + err,
                 });
             });
-
     },
 };

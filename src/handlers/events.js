@@ -1,6 +1,6 @@
 const { readdirSync } = require("fs");
 const { log } = require("../functions");
-const ExtendedClient = require("../class/ExtendedClient");
+const ExtendedClient = require("../classes/ExtendedClient");
 
 /**
  *

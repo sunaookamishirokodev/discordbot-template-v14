@@ -1,13 +1,12 @@
 const { Message, EmbedBuilder } = require("discord.js");
-const ExtendedClient = require("../../../class/ExtendedClient");
+const ExtendedClient = require("../../../classes/ExtendedClient");
 const config = require("../../../config");
 
 module.exports = {
     structure: {
         name: "help",
-        description: "View all the possible commands!",
-        aliases: ["h"],
-        cooldown: 15000,
+        aliases: [],
+        cooldown: "5s",
     },
     /**
      * @param {ExtendedClient} client

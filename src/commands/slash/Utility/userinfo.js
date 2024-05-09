@@ -1,5 +1,5 @@
 const { ChatInputCommandInteraction, SlashCommandBuilder, EmbedBuilder } = require("discord.js");
-const ExtendedClient = require("../../../class/ExtendedClient");
+const ExtendedClient = require("../../../classes/ExtendedClient");
 const { time } = require("discord.js");
 
 module.exports = {
@@ -26,10 +26,11 @@ module.exports = {
 
         const roles = [];
 
-        if (member.roles)
+        if (member.roles) {
             member.roles.cache.forEach((role) => {
                 if (role.id !== interaction.guild.roles.everyone.id) roles.push(`${role.toString()}`);
             });
+        }
 
         const arr = [
             `**Username**: ${user.username}`,

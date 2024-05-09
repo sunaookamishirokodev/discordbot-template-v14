@@ -1,14 +1,13 @@
-const { Message } = require("discord.js");
-const ExtendedClient = require("../../../class/ExtendedClient");
+const { Message, PermissionFlagsBits } = require("discord.js");
+const ExtendedClient = require("../../../classes/ExtendedClient");
 const config = require("../../../config");
 const prisma = require("../../../handlers/database");
 
 module.exports = {
     structure: {
         name: "prefix",
-        description: "Get/Set/Default prefix",
         aliases: [],
-        permissions: "Administrator",
+        permissions: PermissionFlagsBits.Administrator,
     },
     /**
      * @param {ExtendedClient} client

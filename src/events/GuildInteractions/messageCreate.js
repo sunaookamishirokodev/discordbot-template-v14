@@ -1,8 +1,9 @@
-const { ChannelType, Message } = require("discord.js");
+const { ChannelType, Message, time } = require("discord.js");
 const config = require("../../config");
 const { log } = require("../../functions");
-const ExtendedClient = require("../../class/ExtendedClient");
+const ExtendedClient = require("../../classes/ExtendedClient");
 const prisma = require("../../handlers/database");
+const ms = require("ms");
 
 const cooldown = new Map();
 
@@ -43,7 +44,6 @@ module.exports = {
                     if (message.author.id !== config.users.ownerId) {
                         await message.reply({
                             content: "The bot developer has the only permissions to use this command.",
-                            ephemeral: true,
                         });
 
                         return;
@@ -53,7 +53,6 @@ module.exports = {
                 if (command.structure?.permissions && !message.member.permissions.has(command.structure?.permissions)) {
                     await message.reply({
                         content: "You do not have the permission to use this command.",
-                        ephemeral: true,
                     });
 
                     return;
@@ -63,7 +62,6 @@ module.exports = {
                     if (!config.users.developers.includes(message.author.id)) {
                         await message.reply({
                             content: "You are not authorized to use this command",
-                            ephemeral: true,
                         });
 
                         return;
@@ -73,54 +71,45 @@ module.exports = {
                 if (command.structure?.nsfw && !message.channel.nsfw) {
                     await message.reply({
                         content: "The current channel is not a NSFW channel.",
-                        ephemeral: true,
                     });
 
                     return;
                 }
 
                 if (command.structure?.cooldown) {
-                    const cooldownFunction = () => {
-                        let data = cooldown.get(message.author.id);
-
-                        data.push(commandInput);
-
-                        cooldown.set(message.author.id, data);
-
-                        setTimeout(() => {
-                            let data = cooldown.get(message.author.id);
-
-                            data = data.filter((v) => v !== commandInput);
-
-                            if (data.length <= 0) {
-                                cooldown.delete(message.author.id);
-                            } else {
-                                cooldown.set(message.author.id, data);
-                            }
-                        }, command.structure?.cooldown);
+                    const setCooldown = (name, time) => {
+                        return {
+                            name,
+                            availableAt: Date.now() + ms(time),
+                        };
                     };
 
                     if (cooldown.has(message.author.id)) {
-                        let data = cooldown.get(message.author.id);
-
-                        if (data.some((v) => v === commandInput)) {
+                        const data = cooldown.get(message.author.id);
+                        if (data.name === commandInput && data.availableAt <= Date.now()) {
                             await message.reply({
-                                content: `Slow down buddy! You're too fast to use this command ${command.structure.cooldown / 1000}s.`,
-                                ephemeral: true,
+                                content: `Slow down buddy! Try it again in ${time(Date.now() - data.availableAt, "t")}.`,
                             });
-
-                            return;
-                        } else {
-                            cooldownFunction();
                         }
                     } else {
-                        cooldown.set(message.author.id, [commandInput]);
-
-                        cooldownFunction();
+                        cooldown.set(message.author.id, [setCooldown(commandInput, command.structure.cooldown)]);
                     }
-                }
 
-                command.run(client, message, args);
+                    setTimeout(() => {
+                        let data = cooldown.get(message.author.id);
+
+                        if (!data) return;
+                        data = data.filter((v) => v.name !== commandInput);
+
+                        if (data.length === 0) {
+                            cooldown.delete(message.author.id);
+                        } else {
+                            cooldown.set(message.author.id, data);
+                        }
+                    }, ms(command.structure.cooldown));
+
+                    command.run(client, message, args);
+                }
             } catch (error) {
                 log(error, "err");
             }

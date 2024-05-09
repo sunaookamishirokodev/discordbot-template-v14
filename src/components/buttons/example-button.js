@@ -1,19 +1,17 @@
-const { ButtonInteraction } = require('discord.js');
-const ExtendedClient = require('../../class/ExtendedClient');
+const { ButtonInteraction } = require("discord.js");
+const ExtendedClient = require("../../classes/ExtendedClient");
 
 module.exports = {
-    customId: 'example-button',
+    customId: "example-button",
     /**
-     * 
-     * @param {ExtendedClient} client 
-     * @param {ButtonInteraction} interaction 
+     *
+     * @param {ExtendedClient} client
+     * @param {ButtonInteraction} interaction
      */
     run: async (client, interaction) => {
-
         await interaction.reply({
-            content: 'The button has been successfully responded!',
-            ephemeral: true
+            content: "The button has been successfully responded!",
+            ephemeral: true,
         });
-
-    }
+    },
 };
