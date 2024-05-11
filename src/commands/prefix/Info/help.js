@@ -1,6 +1,7 @@
 const { Message, EmbedBuilder } = require("discord.js");
 const ExtendedClient = require("../../../classes/ExtendedClient");
 const config = require("../../../config");
+const prisma = require("../../../handlers/database");
 
 module.exports = {
     structure: {
@@ -15,7 +16,7 @@ module.exports = {
      */
     run: async (client, message, args) => {
         const data = await prisma.guild.findUnique({
-            where: { id: interaction.guildId },
+            where: { id: message.guildId },
             select: { prefix: true },
         });
 

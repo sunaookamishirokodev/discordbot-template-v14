@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, ChatInputCommandInteraction } = require("discord.js");
+const { SlashCommandBuilder, ChatInputCommandInteraction, codeBlock } = require("discord.js");
 const ExtendedClient = require("../../../classes/ExtendedClient");
 
 module.exports = {
@@ -37,7 +37,7 @@ module.exports = {
             })
             .catch(async (err) => {
                 await interaction.editReply({
-                    content: "Something went wrong:\n" + err,
+                    content: "Something went wrong:\n" + codeBlock(err),
                 });
             });
     },

@@ -1,4 +1,4 @@
-const { CLIENT_TOKEN, CLIENT_ID, GUILD_ID, LOGGER_CHANNEL_ID } = process.env;
+const { CLIENT_TOKEN, CLIENT_ID, GUILD_ID, MOD_LOGGER_CHANNEL_ID, USER_LOGGER_CHANNEL_ID } = process.env;
 
 module.exports = {
     client: {
@@ -12,8 +12,11 @@ module.exports = {
             prefix: true,
             slash: true,
             user: true,
-            message: true
+            message: true,
         },
+    },
+    embed: {
+        defaultColor: "#00FFFF",
     },
     users: {
         developers: ["345876818328420362", "1216624112139632711"],
@@ -22,7 +25,11 @@ module.exports = {
     channels: {
         modLogs: {
             enabled: true,
-            channel: LOGGER_CHANNEL_ID,
+            channel: MOD_LOGGER_CHANNEL_ID,
+        },
+        userLogs: {
+            enabled: true,
+            channel: USER_LOGGER_CHANNEL_ID,
         },
     },
     development: {

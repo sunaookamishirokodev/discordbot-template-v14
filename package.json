@@ -7,7 +7,9 @@
         "test": "echo \"Wow Shu-chan so cuti?\" && exit 1",
         "start": "node .",
         "db:sync": "prisma db push",
-        "db:format": "prisma format"
+        "db:format": "prisma format",
+        "db:gen": "prisma generate",
+        "db:studio": "prisma studio"
     },
     "keywords": [],
     "author": "furinadeveloper",
@@ -17,6 +19,7 @@
         "chalk": "^2.4.2",
         "discord.js": "^14.15.1",
         "dotenv": "^16.3.1",
+        "lodash": "^4.17.21",
         "ms": "^2.1.3"
     },
     "devDependencies": {

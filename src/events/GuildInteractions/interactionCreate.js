@@ -26,42 +26,36 @@ module.exports = {
         try {
             if (command.options?.ownerOnly) {
                 if (interaction.user.id !== config.users.ownerId) {
-                    await interaction.reply({
+                    return await interaction.reply({
                         content: "The bot developer has the only permissions to use this command.",
                         ephemeral: true,
                     });
-
-                    return;
                 }
             }
 
             if (command.options?.developers) {
                 if (config.users?.developers?.length > 0 && !config.users?.developers?.includes(interaction.user.id)) {
-                    await interaction.reply({
+                    return await interaction.reply({
                         content: "You are not authorized to use this command",
                         ephemeral: true,
                     });
 
-                    return;
+                    ;
                 } else if (config.users?.developers?.length <= 0) {
-                    await interaction.reply({
+                    return await interaction.reply({
                         content:
                             "This is a developer only command, but unable to execute due to missing user IDs in configuration file.",
 
                         ephemeral: true,
                     });
-
-                    return;
                 }
             }
 
             if (command.options?.nsfw && !interaction.channel.nsfw) {
-                await interaction.reply({
+                return await interaction.reply({
                     content: "The current channel is not a NSFW channel",
                     ephemeral: true,
                 });
-
-                return;
             }
 
             if (command.options?.cooldown) {

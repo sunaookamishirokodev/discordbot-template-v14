@@ -1,7 +1,6 @@
 const config = require("../../config");
 const ExtendedClient = require("../../classes/ExtendedClient");
-const { EmbedBuilder } = require("discord.js");
-const { time } = require("discord.js");
+const UserLoggerInterface = require("../../interfaces/userLogger");
 
 module.exports = {
     event: "messageUpdate",
@@ -21,22 +20,11 @@ module.exports = {
 
         if (oldMessage.author.bot || newMessage.author.bot) return;
 
-        try {
-            const data = [
-                `**Old**: ${oldMessage.content}`,
-                `**Updated**: ${newMessage.content}`,
-                `**Author**: ${newMessage.author.toString()}`,
-                `**Date**: ${time(Date.now(), "D")} (${time(Date.now(), "R")})`,
-            ];
+        const embed = UserLoggerInterface(client, oldMessage, newMessage, "update");
 
+        try {
             await modLogsChannel.send({
-                embeds: [
-                    new EmbedBuilder()
-                        .setTitle("Message Update")
-                        .setThumbnail(newMessage.author.displayAvatarURL())
-                        .setDescription(data.join("\n"))
-                        .setColor("Yellow"),
-                ],
+                embeds: [embed],
             });
         } catch (err) {
             console.error(err);

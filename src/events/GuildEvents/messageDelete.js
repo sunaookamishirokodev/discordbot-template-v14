@@ -1,6 +1,6 @@
 const config = require("../../config");
 const ExtendedClient = require("../../classes/ExtendedClient");
-const { EmbedBuilder, time } = require("discord.js");
+const UserLoggerInterface = require("../../interfaces/userLogger");
 
 module.exports = {
     event: "messageDelete",
@@ -19,21 +19,11 @@ module.exports = {
 
         if (message.author.bot) return;
 
-        try {
-            const data = [
-                `**Content**: ${message.content}`,
-                `**Author**: ${message.author.toString()}`,
-                `**Date**: ${time(Date.now(), "D")} (${time(Date.now(), "R")})`,
-            ];
+        const embed = UserLoggerInterface(client, message, null, "delete");
 
+        try {
             await modLogsChannel.send({
-                embeds: [
-                    new EmbedBuilder()
-                        .setTitle("Message Delete")
-                        .setThumbnail(message.author.displayAvatarURL())
-                        .setDescription(data.join("\n"))
-                        .setColor("Yellow"),
-                ],
+                embeds: [embed],
             });
         } catch (err) {
             console.error(err);

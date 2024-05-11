@@ -17,6 +17,20 @@ module.exports = {
     run: async (client, message, args) => {
         const type = args[0];
 
+        console.log("Args", args);
+
+        if (!type) {
+            const prefix =
+                (await prisma.user.findUnique({
+                    where: { id: message.guildId },
+                    select: { prefix: true },
+                })) || config.handler.prefix;
+
+            return await message.reply({
+                content: `Your server prefix is ${inlineCode(prefix)}`,
+            });
+        }
+
         switch (type) {
             case "set": {
                 const prefix = args[1];
@@ -49,12 +63,16 @@ module.exports = {
 
             case "reset": {
                 const prefix = config.handler.prefix;
-                await prisma.guild.upsert({
-                    where: { id: message.guildId },
-                    create: { id: message.guildId, prefix },
-                    update: { prefix },
-                    select: { prefix: true },
-                });
+                try {
+                    await prisma.guild.upsert({
+                        where: { id: message.guildId },
+                        create: { id: message.guildId, prefix },
+                        update: { prefix },
+                        select: { prefix: true },
+                    });
+                } catch (error) {
+                    console.error(error);
+                }
 
                 await message.reply({
                     content: `The new prefix on this server is: \`${prefix}\` (default).`,

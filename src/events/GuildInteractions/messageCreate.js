@@ -42,38 +42,30 @@ module.exports = {
             try {
                 if (command.structure?.ownerOnly) {
                     if (message.author.id !== config.users.ownerId) {
-                        await message.reply({
+                        return await message.reply({
                             content: "The bot developer has the only permissions to use this command.",
                         });
-
-                        return;
                     }
                 }
 
                 if (command.structure?.permissions && !message.member.permissions.has(command.structure?.permissions)) {
-                    await message.reply({
+                    return await message.reply({
                         content: "You do not have the permission to use this command.",
                     });
-
-                    return;
                 }
 
                 if (command.structure?.developers) {
                     if (!config.users.developers.includes(message.author.id)) {
-                        await message.reply({
+                        return await message.reply({
                             content: "You are not authorized to use this command",
                         });
-
-                        return;
                     }
                 }
 
                 if (command.structure?.nsfw && !message.channel.nsfw) {
-                    await message.reply({
+                    return await message.reply({
                         content: "The current channel is not a NSFW channel.",
                     });
-
-                    return;
                 }
 
                 if (command.structure?.cooldown) {
