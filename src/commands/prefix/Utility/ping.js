@@ -13,8 +13,8 @@ module.exports = {
      * @param {string[]} args
      */
     run: async (client, message, args) => {
-        await message.reply({
-            content: "Pong! " + client.ws.ping,
-        });
+        await message.reply(
+            `🏓Latency is ${Date.now() - message.createdTimestamp}ms.\nAPI Latency is ${Math.round(client.ws.ping)}ms`,
+        );
     },
 };

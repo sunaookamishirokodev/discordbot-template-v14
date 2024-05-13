@@ -16,7 +16,8 @@ module.exports = {
      * @param {ChatInputCommandInteraction<true>} interaction
      */
     run: async (client, interaction) => {
-        const code = interaction.options.getString("code")
+        const code = interaction.options.getString("code");
+        console.log(code)
         const resultEmbed = new EmbedBuilder()
             .setFooter({
                 text: `Gỡ lỗi cho ${client.user.username}`,
@@ -70,6 +71,10 @@ module.exports = {
                 );
         }
 
-        interaction.reply({ embeds: [resultEmbed] });
+        try {
+            await interaction.reply({ embeds: [resultEmbed] });
+        } catch (error) {
+            console.error(error);
+        }
     },
 };

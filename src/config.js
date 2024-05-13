@@ -20,7 +20,7 @@ module.exports = {
     },
     users: {
         developers: ["345876818328420362", "1216624112139632711"],
-        ownerId: "345876818328420362",
+        ownerId: "1216624112139632711",
     },
     channels: {
         modLogs: {

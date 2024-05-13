@@ -1,6 +1,7 @@
 const config = require("../../config");
 const { log } = require("../../functions");
 const ExtendedClient = require("../../classes/ExtendedClient");
+const ms = require("ms");
 
 const cooldown = new Map();
 
@@ -27,7 +28,7 @@ module.exports = {
             if (command.options?.ownerOnly) {
                 if (interaction.user.id !== config.users.ownerId) {
                     return await interaction.reply({
-                        content: "The bot developer has the only permissions to use this command.",
+                        content: "The bot owner has the only permissions to use this command.",
                         ephemeral: true,
                     });
                 }
@@ -36,14 +37,13 @@ module.exports = {
             if (command.options?.developers) {
                 if (config.users?.developers?.length > 0 && !config.users?.developers?.includes(interaction.user.id)) {
                     return await interaction.reply({
-                        content: "You are not authorized to use this command",
+                        content: "The bot developers has the only permissions to use this command.",
                         ephemeral: true,
                     });
                 } else if (config.users?.developers?.length <= 0) {
                     return await interaction.reply({
                         content:
                             "This is a developer only command, but unable to execute due to missing user IDs in configuration file.",
-
                         ephemeral: true,
                     });
                 }
