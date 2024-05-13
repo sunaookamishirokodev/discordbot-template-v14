@@ -1,4 +1,4 @@
-const { Message, PermissionFlagsBits } = require("discord.js");
+const { Message, PermissionFlagsBits, inlineCode } = require("discord.js");
 const ExtendedClient = require("../../../classes/ExtendedClient");
 const config = require("../../../config");
 const prisma = require("../../../handlers/database");
@@ -8,6 +8,7 @@ module.exports = {
         name: "prefix",
         aliases: [],
         permissions: PermissionFlagsBits.Administrator,
+        cooldown: "5s",
     },
     /**
      * @param {ExtendedClient} client
@@ -17,18 +18,20 @@ module.exports = {
     run: async (client, message, args) => {
         const type = args[0];
 
-        console.log("Args", args);
-
         if (!type) {
-            const prefix =
-                (await prisma.user.findUnique({
-                    where: { id: message.guildId },
-                    select: { prefix: true },
-                })) || config.handler.prefix;
+            try {
+                const prefix =
+                    (await prisma.guild.findUnique({
+                        where: { id: message.guildId },
+                        select: { prefix: true },
+                    })) || config.handler.prefix;
 
-            return await message.reply({
-                content: `Your server prefix is ${inlineCode(prefix)}`,
-            });
+                return await message.reply({
+                    content: `Your server prefix is ${inlineCode(prefix)}`,
+                });
+            } catch (error) {
+                console.error(error);
+            }
         }
 
         switch (type) {

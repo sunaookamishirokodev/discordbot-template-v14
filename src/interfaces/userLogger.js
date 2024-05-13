@@ -40,7 +40,7 @@ function UserLoggerInterface(client, oldMessage, newMessage, type) {
         .setColor(config.embed.defaultColor)
         .setFooter({ text: `Performed by ${oldMessage.author.username}`, iconURL: oldMessage.author.avatarURL() })
         .setDescription(
-            `${bold("User")}: ${userMention(oldMessage.id)}.\n${bold("Type")}: ${inlineCode(_.camelCase(type))}.\n${detailLogger}`,
+            `${bold("User")}: ${userMention(oldMessage.author.id)}.\n${bold("Type")}: ${inlineCode(_.camelCase(type))}.\n${detailLogger}`,
         )
         .setTimestamp();
 }

@@ -77,11 +77,17 @@ module.exports = {
                     };
 
                     if (cooldown.has(message.author.id)) {
-                        const data = cooldown.get(message.author.id);
-                        if (data.name === commandInput && data.availableAt <= Date.now()) {
-                            await message.reply({
-                                content: `Slow down buddy! Try it again in ${time(Date.now() - data.availableAt, "t")}.`,
-                            });
+                        let data = cooldown.get(message.author.id);
+                        data = data.filter((d) => d.name === commandInput);
+                        data = data[0];
+                        if (data?.availableAt >= Date.now()) {
+                            await message
+                                .reply({
+                                    content: `Slow down buddy! Try it again in ${time(Math.floor(data.availableAt / 1000), "R")}.`,
+                                })
+                                .then((m) => setTimeout(() => m.delete(), data.availableAt - Date.now()));
+
+                            return;
                         }
                     } else {
                         cooldown.set(message.author.id, [setCooldown(commandInput, command.structure.cooldown)]);

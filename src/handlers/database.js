@@ -4,4 +4,7 @@ const prisma = new PrismaClient({
     log: ["info"],
 });
 
+prisma.$connect();
+
 module.exports = prisma;
+

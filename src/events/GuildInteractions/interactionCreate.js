@@ -39,8 +39,6 @@ module.exports = {
                         content: "You are not authorized to use this command",
                         ephemeral: true,
                     });
-
-                    ;
                 } else if (config.users?.developers?.length <= 0) {
                     return await interaction.reply({
                         content:
@@ -67,11 +65,17 @@ module.exports = {
                 };
 
                 if (cooldown.has(interaction.user.id)) {
-                    const data = cooldown.get(interaction.user.id);
-                    if (data.name === interaction.commandName && data.availableAt <= Date.now()) {
-                        await message.reply({
-                            content: `Slow down buddy! Try it again in ${time(Date.now() - data.availableAt, "t")}.`,
-                        });
+                    let data = cooldown.get(interaction.user.id);
+                    data = data.filter((d) => d.name === interaction.commandName);
+                    data = data[0];
+                    if (data?.availableAt >= Date.now()) {
+                        await interaction
+                            .reply({
+                                content: `Slow down buddy! Try it again in ${time(Math.floor(data.availableAt / 1000), "R")}.`,
+                            })
+                            .then((m) => setTimeout(() => m.delete(), data.availableAt - Date.now()));
+
+                        return;
                     }
                 } else {
                     cooldown.set(interaction.user.id, [setCooldown(interaction.commandName, command.options.cooldown)]);
@@ -90,10 +94,8 @@ module.exports = {
                     }
                 }, ms(command.options.cooldown));
 
-                command.run(client, message, args);
+                command.run(client, interaction);
             }
-
-            command.run(client, interaction);
         } catch (error) {
             log(error, "err");
         }
