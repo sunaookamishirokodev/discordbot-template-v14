@@ -20,7 +20,7 @@ Did you like my project? Click on the star button (⭐️) right above your scre
 - Easy and simple to use.
 - Advanced command options ([click here](#command-options)).
 - Updated to latest discord.js version.
-- Included a database: MongoDB.
+- Included a database: all database prisma support.
 
 ## Commands, events, and components structure
 
@@ -104,10 +104,10 @@ module.exports = {
 2. Download this project as a **.zip** file: [Click here](https://github.com/TFAGaming/DiscordJS-V14-Bot-Template/archive/refs/heads/main.zip)
 3. Extract the .zip file into a normal folder.
 4. Open VSCode, click on **Open Folder**, and select the new created folder.
-5. Go to `src/` and rename `example.config.js` to `config.js` and fill all the required values. You can use ENV instead of `config.js` to keep your bot token and ID, and your MongoDB URI in a secured place by renaming the file `.env.example` to `.env` and filling all required values.
+5. Go to `src/` and rename `example.config.js` to `config.js` and fill all the required values. You can use ENV instead of `config.js` to keep your bot token and ID, and your database URL in a secured place by renaming the file `.env.example` to `.env` and filling all required values.
 
 > [!CAUTION]
-> Sharing your Discord bot's token with anyone is a very risky move since you'll allow them to use your bot. This is also a dangerous move for the MongoDB database; we don't recommend using any public URIs or sharing your database connection URL.
+> Sharing your Discord bot's token with anyone is a very risky move since you'll allow them to use your bot. This is also a dangerous move for the database; we don't recommend using any public URIs or sharing your database connection URL.
 
 6. Initialize a new npm package:
 
@@ -118,7 +118,7 @@ npm init -y
 7. Install all [required packages](#packages):
 
 ```
-npm install chalk@2.4.2 discord.js@latest dotenv mongoose
+npm install chalk@2.4.2 discord.js@latest dotenv prisma @prisma/client
 ```
 
 8. To start your bot, run `node .` or `npm run start`.
@@ -154,9 +154,6 @@ The component options, each property is optional which means it's allowed to pro
 
 ### 2. I'm unable to view any application commands, no errors in console?
 This is a common problem for developers, to fix this issue, restart the Discord app or go in a different text channel.
-
-### 3. Is MongoDB required?
-No, MongoDB is not required. There is an option to disable it in `config.js` so you will avoid errors from the commands that requires the database, such as `?prefix`. If you want to use the database, visit [MongoDB website](https://www.mongodb.com/).
 
 ## Contributors
 Thank you to all the people who contributed to **DiscordJS-V14-Bot-Template**!
