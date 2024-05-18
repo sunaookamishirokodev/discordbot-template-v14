@@ -35,8 +35,7 @@ module.exports = {
         description: string,
         aliases: string[],
         permissions?: PermissionResolvable,
-        cooldown?: number,
-        globalCooldown?: boolean,
+        cooldown?: "5s" | "1d" | ...,
         ownerOnly?: boolean,
         developers?: boolean,
         nsfw?: boolean
@@ -91,7 +90,8 @@ module.exports = {
 - **chalk** v2.4.2
 - **discord.js** v^14.13.0
 - **dotenv** v^latest
-- **mongoose** v^latest
+- **prisma** v^latest
+- **@prisma/client** v^latest
 
 > [!WARNING]
 > Installing any version from the package `chalk` that is over **v2.4.2** will throw an error that you must enable ES6 modules, while this handler uses CommonJS modules.
@@ -124,38 +124,11 @@ npm install chalk@2.4.2 discord.js@latest dotenv mongoose
 8. To start your bot, run `node .` or `npm run start`.
 9. Enjoy. =)
 
-<!--
-## Hosting (<img src="https://media.discordapp.net/attachments/1111644651036876822/1124045180484472882/discloud_white_horizon-e96efbfa.png?width=960&height=163" width=100>)
-Use [Discloud](https://discloudbot.com/)! A trust-worthy Discord bot hosting service.
-
-1. Login using your Discord/GitHub account, and then don't close the Dashboard tab (because we need it later).
-2. Go to your project on VSCode, create a new file `discloud.config`. This file is a configuration file for Discloud apps servers. The `discloud.config` file content must be like the codeblock below, and remember to change **YOUR_BOT_ID** to your actual bot ID.
-
-```apache
-ID = YOUR_BOT_ID
-TYPE = bot
-MAIN = src/index.js
-RAM = 100
-AUTORESTART = true
-VERSION = latest
-API = tools
-```
-
-3. Open explorer and navigate using the path of your project. Hold the **CTRL** key, and click on `src/`, `package.json`, and `discloud.config`. Now release the key, and right click on the selected files/folders and click on **Convert into .zip file**.
-4. Go back to the Discloud dashboard, click on **Add App**, and then upload the .zip file in the upload box. Make sure to accept the ToS of the service and then click on **Upload**.
-5. Wait for at least 20 seconds (depends on your Internet speed), and then your bot should be on.
-
-> **Warning**
-> Discloud has recently made every Free plan servers into **15 days** hosting only. Use the command `.rw` from their bot in the commands channel (on their Discord server) to reset the timer. Join the server: [Click here!](https://discord.gg/discloud-584490943034425391)
-
--->
-
 ## Command options
 The command options, each property is optional, which means it's allowed to provide an `undefined` value to one of these properties below.
 
 - `permissions` (**PermissionFlagsBits** | **string**): The required permissions for the command, available to message commands only.
-- `cooldown` (**number**): The cooldown of the command, in milliseconds.
-- `globalCooldown` (**boolean**): Determines whether the cooldown is global or not.
+- `cooldown` (**string**): The cooldown of the command.
 - `developers` (**boolean**): Determines whether the command is executable only to the developers of the bot.
 - `nsfw` (**boolean**): Determines whether this command is executable only in NSFW channels.
 
