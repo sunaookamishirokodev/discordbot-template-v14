@@ -1,7 +1,6 @@
 const { Message, PermissionFlagsBits, inlineCode } = require("discord.js");
 const ExtendedClient = require("../../../classes/ExtendedClient");
 const config = require("../../../config");
-const prisma = require("../../../handlers/database");
 
 module.exports = {
     structure: {
@@ -21,7 +20,7 @@ module.exports = {
         if (!type) {
             try {
                 const prefix =
-                    (await prisma.guild.findUnique({
+                    (await client.prisma.guild.findUnique({
                         where: { id: message.guildId },
                         select: { prefix: true },
                     })) || config.handler.prefix;
@@ -47,7 +46,7 @@ module.exports = {
                 }
 
                 try {
-                    const data = await prisma.guild.upsert({
+                    const data = await client.prisma.guild.upsert({
                         where: { id: message.guildId },
                         create: { id: message.guildId, prefix },
                         update: { prefix },
@@ -67,7 +66,7 @@ module.exports = {
             case "reset": {
                 const prefix = config.handler.prefix;
                 try {
-                    await prisma.guild.upsert({
+                    await client.prisma.guild.upsert({
                         where: { id: message.guildId },
                         create: { id: message.guildId, prefix },
                         update: { prefix },

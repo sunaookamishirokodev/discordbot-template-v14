@@ -1,7 +1,6 @@
 const { ChatInputCommandInteraction, SlashCommandBuilder, EmbedBuilder } = require("discord.js");
 const ExtendedClient = require("../../../classes/ExtendedClient");
 const config = require("../../../config");
-const prisma = require("../../../handlers/database");
 
 module.exports = {
     structure: new SlashCommandBuilder().setName("help").setDescription("View all the possible commands!"),
@@ -15,7 +14,7 @@ module.exports = {
     run: async (client, interaction) => {
         await interaction.deferReply();
 
-        const data = await prisma.guild.findUnique({
+        const data = await client.prisma.guild.findUnique({
             where: { id: interaction.guildId },
             select: { prefix: true },
         });

@@ -1,4 +1,5 @@
 const chalk = require("chalk");
+const { PermissionsBitField } = require("discord.js");
 
 /**
  * Logs a message with optional styling.
@@ -28,7 +29,25 @@ const isSnowflake = (id) => {
     return /^\d+$/.test(id);
 };
 
+/**
+ *
+ * @param {PermissionsBitField} permissions
+ * @returns
+ */
+
+const permissionsNames = (permissions) => {
+    const result = [];
+
+    for (const perm of Object.keys(PermissionsBitField.Flags)) {
+        if (PermissionsBitField.Flags[perm] === permissions) {
+            result.push(perm);
+        }
+    }
+    return result;
+};
+
 module.exports = {
     log,
     isSnowflake,
+    permissionsNames,
 };

@@ -2,7 +2,6 @@ const { ChannelType, Message, time } = require("discord.js");
 const config = require("../../config");
 const { log } = require("../../functions");
 const ExtendedClient = require("../../classes/ExtendedClient");
-const prisma = require("../../handlers/database");
 const ms = require("ms");
 
 const cooldown = new Map();
@@ -20,7 +19,7 @@ module.exports = {
 
         if (!config.handler.commands.prefix) return;
 
-        const data = await prisma.guild.findUnique({
+        const data = await client.prisma.guild.findUnique({
             where: { id: message.guildId },
             select: { prefix: true },
         });
