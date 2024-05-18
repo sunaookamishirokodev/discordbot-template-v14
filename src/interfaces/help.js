@@ -24,13 +24,13 @@ async function HelpInterface(client, message) {
         embeds: [
             new EmbedBuilder()
                 .setAuthor({
-                    name: client.user.displayName + " - Danh sách lệnh",
+                    name: client.user.displayName + " - Command list",
                     iconURL: client.user.displayAvatarURL(),
                 })
                 .setColor(config.embed.defaultColor)
                 .addFields(content)
                 .setFooter({
-                    text: `Yêu cầu bởi ${message.author.displayName}`,
+                    text: `Requested by ${message.author.displayName}`,
                     iconURL: message.author.avatarURL(),
                 })
                 .setTimestamp(),
@@ -49,31 +49,31 @@ async function HelpDetailInterface(client, message, cmd) {
     const _cmd = client.cmds[cmd];
     if (!_cmd) {
         return await message.reply({
-            content: "Lệnh không tồn tại",
+            content: "Command not found",
         });
     }
 
     const content = [
-        `**Tên lệnh:** ${_cmd.name}`,
-        `**Tên khác:** ${_cmd.aliases}`,
-        `**Mô tả:** ${_cmd.desc}`,
+        `**Name:** ${_cmd.name}`,
+        `**Aliases:** ${_cmd.aliases}`,
+        `**Description:** ${_cmd.desc}`,
         `**Nsfw:** ${_cmd.nsfw}`,
-        `**Danh mục:** ${_cmd.category}`,
-        `**Quyền hạn:** ${_cmd.permissions}`,
-        `**Delay:** ${_cmd.cooldown}`,
+        `**Category:** ${_cmd.category}`,
+        `**Permissions:** ${_cmd.permissions}`,
+        `**Cooldown:** ${_cmd.cooldown}`,
     ];
 
     return await message.reply({
         embeds: [
             new EmbedBuilder()
                 .setAuthor({
-                    name: `Chi tiết lệnh ${cmd}`,
+                    name: `Command detail - ${cmd}`,
                     iconURL: client.user.displayAvatarURL(),
                 })
                 .setColor(config.embed.defaultColor)
                 .setDescription(content.join("\n"))
                 .setFooter({
-                    text: `Yêu cầu bởi ${message.author.displayName}`,
+                    text: `Requested by ${message.author.displayName}`,
                     iconURL: message.author.avatarURL(),
                 })
                 .setTimestamp(),
